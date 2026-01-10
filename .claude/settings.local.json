@@ -1,10 +1,6 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(ls:*)",
-      "Bash(mkdir:*)",
-      "Bash(find:*)"
-    ],
+    "allow": ["Bash(ls:*)", "Bash(mkdir:*)", "Bash(find:*)"],
     "defaultMode": "bypassPermissions"
   }
 }
