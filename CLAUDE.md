@@ -13,7 +13,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ├── backend/          # FastAPI + PostgreSQL + GraphQL API
 ├── frontend/         # React Native mobile app (à venir)
 ├── nginx/            # Reverse proxy configuration (à venir)
+├── docs/             # Product & technical documentation
 └── .agent/           # AI agent contracts and rules
+    ├── agent.md            # General rules
+    ├── backend.md          # Backend-specific rules
+    ├── frontend.md         # Frontend-specific rules
+    ├── infra.md            # Infrastructure rules
+    └── doc-agent.md        # Documentation agent contract
 ```
 
 ### Technology Stack
@@ -402,3 +408,79 @@ Screens/Components → Services → Repositories → HTTP Client
 - Security: Headers (XFO, nosniff, referrer policy), rate limiting (API + login), bot protection, block dotfiles/config files
 - Validation: Config test in CI (sandbox) + on server before reload
 - Deployment: Script with safeguards (refuse dev/prod mixing) + backup + graceful reload
+
+---
+
+## Documentation (`/docs`)
+
+The `/docs` folder contains all product, technical, and architectural documentation.
+
+### Structure
+
+```
+docs/
+├── README.md           # Documentation index
+├── features/           # Feature specifications
+├── flows/              # UX flows and user journeys
+│   └── video.md       # Video capture/upload/playback
+├── pages/              # Page/screen wireframes
+├── technical/          # Technical specifications
+├── design/             # Design system & UI components
+├── architecture/       # System architecture & data models
+└── decisions/          # ADR (Architecture Decision Records)
+```
+
+### Documentation Agent
+
+A specialized agent is available for documentation tasks. See `.agent/doc-agent.md` for the complete contract.
+
+**Commands** (when using doc agent context):
+- `/doc create <type> <name>` - Create new documentation
+- `/doc update <file>` - Update existing documentation
+- `/doc review` - Review all docs for completeness
+- `/doc index` - Regenerate README index
+- `/doc search <term>` - Search across all docs
+
+**Usage**:
+```
+# Load doc agent context
+cat .agent/doc-agent.md
+
+# Then request documentation work
+"Create feature documentation for croix tracking"
+"Update the video flow with new wireframes"
+"Review all MVP documentation"
+```
+
+**When to use Doc Agent**:
+- Creating feature specs or user stories
+- Documenting UX flows or user journeys
+- Writing ADRs (Architecture Decision Records)
+- Maintaining design system documentation
+- Generating architecture diagrams or data models
+
+**Integration with BMAD**:
+- Scrum Master (`/sm`) creates user stories → Doc agent creates feature docs
+- Architect designs system → Doc agent creates architecture docs
+- Developer implements → Doc agent documents technical choices
+
+### Documentation Standards
+
+**Naming**:
+- Use kebab-case: `croix-tracking.md`
+- Be descriptive: `post-session-flow.md`, not `flow1.md`
+- Use prefixes for ADRs: `001-backend-fastapi.md`
+
+**Structure**:
+- Clear title (# Title)
+- Status emoji: 🔴 Todo, 🟡 In Progress, ✅ Complete
+- Consistent heading levels
+- Visual aids (diagrams, wireframes, tables)
+
+**Maintenance**:
+- Update docs BEFORE coding (design-first)
+- Cross-reference related docs
+- Keep `/docs/README.md` index updated
+- Add "Last updated" timestamps
+
+See `/docs/README.md` for complete documentation guidelines and templates.

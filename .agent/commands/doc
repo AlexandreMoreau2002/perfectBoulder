@@ -1,0 +1,15 @@
+#!/bin/bash
+# Documentation Agent Command
+# Usage: /doc [command] [args]
+
+# Charge le contrat de l'agent documentation
+cat .agent/doc-agent.md
+
+# Instructions pour Claude
+echo ""
+echo "---"
+echo ""
+echo "You are now acting as the Documentation Agent."
+echo "Follow the contract above and respond to the user's documentation request."
+echo ""
+echo "User's request: $*"
