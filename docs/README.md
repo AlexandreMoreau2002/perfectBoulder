@@ -39,12 +39,14 @@ docs/
 | Document | Description | Statut |
 |----------|-------------|--------|
 | `mvp-scope.md` | Liste complète des features MVP | ✅ Complet |
+| `strength-exercises.md` | Exercices de renforcement (muscu, suspension, stats) | 🟡 En cours |
 | _À créer_ | Roadmap v1.0 → v2.0 | 🔴 Todo |
 | _À créer_ | Priorisation (MoSCoW) | 🔴 Todo |
 
 **Création prévue** :
 - `features/mvp-scope.md` : Périmètre MVP complet
 - `features/croix-tracking.md` : Feature "Enregistrer une croix"
+- `features/strength-exercises.md` : Feature "Exercices de renforcement" ✅ Créé
 - `features/social-posts.md` : Feature "Partager un moment"
 - `features/historique.md` : Feature "Consulter l'historique"
 - `features/premium.md` : Features premium (v2.0+)
