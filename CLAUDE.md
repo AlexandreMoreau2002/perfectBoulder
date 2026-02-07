@@ -46,7 +46,56 @@ These rules apply to the entire monorepo (from `.agent/agent.md`):
 - **No dead code**, unused imports, or obvious duplication (DRY)
 - **Simple over clever** (KISS)
 - **Explicit naming**: No vague variable/function names
-- **Import ordering**: "Escalier" style - imports sorted by length, grouped clearly at top of file
+- **Import ordering**: "Escalier" style - imports sorted by length (short → long), grouped clearly at top of file
+
+#### Import Ordering (Escalier Pattern)
+
+**ALWAYS sort imports by length ascending, group by category.**
+
+**React Native / TypeScript Frontend**:
+```typescript
+import React from 'react';
+import { View, Text } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { Button } from '@/components/Button';
+import { useAuth } from '@/hooks/useAuth';
+import { sessionService } from '@/services/sessionService';
+import { colors } from '@/constants/colors';
+import I18n from '@/utils/i18n';
+import { User } from '@/types/models';
+```
+
+Groups (in order):
+1. React + React Native (short)
+2. External libs (increasing length)
+3. @/components
+4. @/hooks
+5. @/services
+6. @/utils
+7. @/constants
+8. @/types
+
+**FastAPI / Python Backend**:
+```python
+from typing import Optional
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.domain.entities import Boulder
+from app.application.services import BoulderService
+from app.adapters.rest.schemas import BoulderSchema
+from app.infra.database import get_session
+```
+
+Groups (in order):
+1. Standard library (short)
+2. External packages (increasing length)
+3. app.domain
+4. app.application
+5. app.adapters
+6. app.infra
 
 ### Security & Secrets
 - Never log secrets (tokens, passwords, keys)

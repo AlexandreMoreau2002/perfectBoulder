@@ -100,6 +100,7 @@ docs/
 
 | Document | Description | Statut |
 |----------|-------------|--------|
+| `debugging-et-logging-mobile.md` | Système centralisé de debug/logging React Native | ✅ Complet |
 | _À créer_ | Stack technique complète | 🔴 Todo |
 | _À créer_ | Gestion médias (S3, thumbnails) | 🔴 Todo |
 | _À créer_ | Upload background & retry | 🔴 Todo |
