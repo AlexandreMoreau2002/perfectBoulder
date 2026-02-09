@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## AVANT TOUTE CHOSE
+
+**Lis ces 3 fichiers dans cet ordre avant de faire quoi que ce soit :**
+
+1. `docs/README.md` - Point d'entree unique (ou aller selon le besoin)
+2. `docs/WORKFLOW.md` - Etape en cours + decisions tranchees
+3. `docs/prd.md` - Ce qu'on construit (scope MVP)
+
+**En cas de contradiction** entre un doc et le PRD (`docs/prd.md`), le PRD fait foi.
+**En cas de doute** sur quoi faire ensuite, consulte `docs/WORKFLOW.md`.
+
+---
+
 ## Project Overview
 
 **perfectBoulder** is a monorepo containing multiple services for a climbing/bouldering application.
@@ -50,52 +63,56 @@ These rules apply to the entire monorepo (from `.agent/agent.md`):
 
 #### Import Ordering (Escalier Pattern)
 
-**ALWAYS sort imports by length ascending, group by category.**
+**CRITICAL RULE: Sort imports by TOTAL LINE LENGTH (shortest → longest), then group by category.**
+
+Count the full import statement length including `import` keyword, not just the module name.
 
 **React Native / TypeScript Frontend**:
 ```typescript
-import React from 'react';
-import { View, Text } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { Button } from '@/components/Button';
-import { useAuth } from '@/hooks/useAuth';
-import { sessionService } from '@/services/sessionService';
-import { colors } from '@/constants/colors';
 import I18n from '@/utils/i18n';
 import { User } from '@/types/models';
+import { View, Text } from 'react-native';
+import { useAuth } from '@/hooks/useAuth';
+import { colors } from '@/constants/colors';
+import { Button } from '@/components/Button';
+import { sessionService } from '@/services/sessionService';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 ```
 
-Groups (in order):
-1. React + React Native (short)
-2. External libs (increasing length)
-3. @/components
-4. @/hooks
-5. @/services
-6. @/utils
-7. @/constants
-8. @/types
+**How it works** (by line length):
+- Line 1: `import I18n from '@/utils/i18n';` (45 chars) ← shortest
+- Line 2: `import { View, Text } from 'react-native';` (51 chars)
+- Line 3: `import { Button } from '@/components/Button';` (54 chars)
+- ...
+- Line N: longest line (80+ chars)
+
+**Groups** (keep groups together, but sort within each):
+1. React + React Native + external libs (shortest to longest)
+2. Local imports: @/components, @/hooks, @/services, @/utils, @/constants, @/types (shortest to longest)
 
 **FastAPI / Python Backend**:
 ```python
 from typing import Optional
-
-from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
+from fastapi import APIRouter, Depends
 from app.domain.entities import Boulder
+from app.infra.database import get_session
 from app.application.services import BoulderService
 from app.adapters.rest.schemas import BoulderSchema
-from app.infra.database import get_session
 ```
 
-Groups (in order):
+**How it works** (by line length):
+- `from typing import Optional` (shortest)
+- `from sqlalchemy.orm import Session`
+- `from fastapi import APIRouter, Depends`
+- `from app.domain.entities import Boulder`
+- ...
+- `from app.infra.database import get_session` (longest)
+
+**Groups** (keep groups together, then sort by length):
 1. Standard library (short)
 2. External packages (increasing length)
-3. app.domain
-4. app.application
-5. app.adapters
-6. app.infra
+3. Local imports: app.domain, app.application, app.adapters, app.infra (shortest to longest)
 
 ### Security & Secrets
 - Never log secrets (tokens, passwords, keys)
@@ -108,6 +125,43 @@ Every interaction must conclude with:
 1. **Test**: Verify code works (manual or automated)
 2. **Update docs**: If behavior changes, update relevant documentation
 3. **Create context**: If needed, create/update docs to help next AI (CONTEXT.md or `.agent/` notes)
+
+### Pre-Submission Code Review Checklist (ALWAYS DO THIS)
+
+**BEFORE submitting ANY code changes, verify:**
+
+#### Imports (Escalier Pattern)
+- [ ] All imports sorted by **TOTAL LINE LENGTH** (shortest → longest)
+- [ ] External libs grouped first, local imports (`@/`) second
+- [ ] No relative paths like `./` or `../` (use `@/` aliases)
+- [ ] Semicolons at end of each import line
+
+#### TypeScript & Types
+- [ ] `npx tsc --noEmit` runs WITHOUT errors
+- [ ] No `any` types (use `unknown` + narrowing if needed)
+- [ ] All function parameters typed
+- [ ] All component props have interfaces
+
+#### Code Quality
+- [ ] No unused imports or variables
+- [ ] No `console.log` left in code (use `debugLog` if needed)
+- [ ] No commented-out code blocks
+- [ ] File follows SRP (one responsibility)
+- [ ] **If modifying package.json**: Always run `npm ci` after to sync node_modules
+
+#### File-Specific Checks
+- **TypeScript/TSX files**: Check `tsconfig.json` is valid, no errors in IDE
+- **React Native**: Check for `react-native-safe-area-context` import if using `SafeAreaView`
+- **Config files**: Validate JSON/JS syntax
+
+#### Before Submitting
+- [ ] Run linter: `npx eslint src` (if configured)
+- [ ] Run formatter: `npx prettier --check src` (if configured)
+- [ ] **Test on iOS simulator** (`npm run ios`)
+- [ ] **Test on Android emulator** (`npm run android`)
+- [ ] **Check console for errors** (Xcode logs on iOS, logcat on Android)
+- [ ] **Verify Context Providers** (SafeAreaProvider, etc. at top level App component, NOT inside nested components)
+- [ ] Read CLAUDE.md rules again to ensure compliance
 
 ### Testing Strategy (All Services)
 
